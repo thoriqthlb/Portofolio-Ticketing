@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 def buat_tabel():
     '''Membuat tabel databasenya'''
 
-    with sqlite3.connect("tiket_inews.db", timeout= 10) as conn:
+    with sqlite3.connect("tiket_perusahaan.db", timeout= 10) as conn:
         kursor = conn.cursor()
         
         kursor.execute("""
@@ -60,7 +60,7 @@ def buat_tabel():
 # Admin login
 def cek_login(username, password):
     '''Validasi login admin'''
-    with sqlite3.connect("tiket_inews.db", timeout=10) as conn:
+    with sqlite3.connect("tiket_perusahaan.db", timeout=10) as conn:
         kursor = conn.cursor()
         
         kursor.execute("SELECT password, role FROM admin WHERE username = ?", (username,))
@@ -74,7 +74,7 @@ def cek_login(username, password):
 def ubah_password(username, password_baru):
     '''Admin bisa mengubah passwordnya'''
     
-    with sqlite3.connect("tiket_inews.db", timeout=10) as conn:
+    with sqlite3.connect("tiket_perusahaan.db", timeout=10) as conn:
         kursor = conn.cursor()
         hashed_password = generate_password_hash(password_baru)
         
@@ -86,7 +86,7 @@ def ubah_password(username, password_baru):
 def tambah_admin(username, password):
     '''Superadmin bisa tambah admin'''
     
-    with sqlite3.connect("tiket_inews.db", timeout=10) as conn:
+    with sqlite3.connect("tiket_perusahaan.db", timeout=10) as conn:
         kursor = conn.cursor()
         
         try:
@@ -102,7 +102,7 @@ def tambah_admin(username, password):
 def ambil_semua_admin():
     '''Superadmin bisa liat daftar admin'''
     
-    with sqlite3.connect("tiket_inews.db", timeout=10)as conn:
+    with sqlite3.connect("tiket_perusahaan.db", timeout=10)as conn:
         kursor = conn.cursor()
         
         kursor.execute("SELECT username, role FROM admin WHERE role = 'admin'")
@@ -114,7 +114,7 @@ def ambil_semua_admin():
 def simpan_tiket(nama, email, unit_kerja, lantai, kategori, detail):
     '''Menerima data dari app.py dan disimpan ke tabel tiket'''
 
-    with sqlite3.connect("tiket_inews.db", timeout= 10)as conn:
+    with sqlite3.connect("tiket_perusahaan.db", timeout= 10)as conn:
         kursor = conn.cursor()
 
         waktu = dt.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -132,7 +132,7 @@ def simpan_tiket(nama, email, unit_kerja, lantai, kategori, detail):
 def cek_status_tiket(id_tiket, email):
     '''Mengambil data tiket dari ID untuk ditampilkan ke user'''
 
-    with sqlite3.connect("tiket_inews.db", timeout=10)as conn:
+    with sqlite3.connect("tiket_perusahaan.db", timeout=10)as conn:
         kursor = conn.cursor()
         
         kursor.execute("SELECT Waktu, Kategori, Status, Closed_At, Ditangani_Oleh FROM tiket WHERE id = ? AND Email = ?", (id_tiket, email))
@@ -144,7 +144,7 @@ def cek_status_tiket(id_tiket, email):
 def update_status(id_tiket, status_baru, nama_admin):
     '''Mengubah status tiket di database berdasarkan ID'''
 
-    with sqlite3.connect("tiket_inews.db", timeout= 10)as conn:
+    with sqlite3.connect("tiket_perusahaan.db", timeout= 10)as conn:
         kursor = conn.cursor()
 
         if status_baru == "Closed":
@@ -167,7 +167,7 @@ def update_status(id_tiket, status_baru, nama_admin):
 def ambil_email(id_tiket):
     '''Mengambil email pelapor dengan ID tiket di database'''
 
-    with sqlite3.connect("tiket_inews.db", timeout= 10)as conn:
+    with sqlite3.connect("tiket_perusahaan.db", timeout= 10)as conn:
         kursor = conn.cursor()
 
         kursor.execute("SELECT Email FROM tiket WHERE id = ?", (id_tiket,))
@@ -181,7 +181,7 @@ def ambil_email(id_tiket):
 def hapus_admin(username):
     '''Menghapus admin dari daftarnya, hanya bisa dilakukan oleh Superadmin'''
 
-    with sqlite3.connect("tiket_inews.db", timeout= 10)as conn:
+    with sqlite3.connect("tiket_perusahaan.db", timeout= 10)as conn:
         kursor = conn.cursor()
 
         kursor.execute("DELETE FROM admin WHERE username = ? AND role = 'admin'", (username,))
@@ -192,7 +192,7 @@ def hapus_admin(username):
 def buat_sesi(username, role):
     '''Membuat token acak untuk login'''
     
-    with sqlite3.connect("tiket_inews.db", timeout=10)as conn:
+    with sqlite3.connect("tiket_perusahaan.db", timeout=10)as conn:
         kursor = conn.cursor()
         
         token = str(uuid.uuid4())
@@ -204,7 +204,7 @@ def buat_sesi(username, role):
 def cek_sesi(token):
     '''Mengecek apakah token di URL valid di database'''
     
-    with sqlite3.connect("tiket_inews.db", timeout=10) as conn:
+    with sqlite3.connect("tiket_perusahaan.db", timeout=10) as conn:
         kursor = conn.cursor()
     
         kursor.execute("""
@@ -227,7 +227,7 @@ def cek_sesi(token):
 def hapus_sesi(token):
     '''Menghapus token dari database saat logout'''
     
-    with sqlite3.connect("tiket_inews.db", timeout=10)as conn:
+    with sqlite3.connect("tiket_perusahaan.db", timeout=10)as conn:
         kursor = conn.cursor()
         
         kursor.execute("DELETE FROM sesi WHERE token = ?", (token,))
