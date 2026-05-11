@@ -7,7 +7,7 @@ from database import buat_tabel, simpan_tiket, update_status, ambil_email, cek_s
 
 # Setup layout
 st.set_page_config(
-    page_title= "iNews IT Ticketing",
+    page_title= "Judul Aplikasi",
     page_icon= "logo_app.png",
     layout= "wide"
 )
@@ -34,12 +34,12 @@ def halaman_tiket():
     
     col1, col2 = st.columns(2)
     with col1:
-        unit_kerja = st.text_input("Unit Kerja (misal: Okezone)").capitalize()
+        unit_kerja = st.text_input("Unit Kerja (misal: Divisi A)").capitalize()
     with col2:
         lantai = st.text_input("Lantai (misal: 12)")
     
     kategori = st.selectbox(
-        "Kategori Masalah", # Sementara, kalo better hardware/software doang yaudah ikutin
+        "Kategori Masalah",
         ["Internet", "Email", "Printer", "Perangkat Lemot", "Perangkat Mati", "Lupa Password", "Lainnya"],
         index=None,
         placeholder= "pilih kategori masalah"
@@ -100,7 +100,7 @@ def halaman_admin():
 
     st.title("Dashboard Admin IT")
 
-    with sqlite3.connect("tiket_inews.db", timeout= 10) as conn:
+    with sqlite3.connect("tiket_perusahaan.db", timeout= 10) as conn:
         kursor = conn.cursor()
 
         kursor.execute("""
@@ -140,7 +140,7 @@ def halaman_admin():
     st.download_button(
         label="Unduh rekap tiket (excel)",
         data = data_excel,
-        file_name="rekap_tiket_inews.xlsx",
+        file_name="rekap_tiket_perusahaan.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
 
@@ -182,8 +182,8 @@ def halaman_admin():
                 st.session_state["pesan_sukses"] = f":green[:material/check_circle:] Status tiket ID {id_tiket} sukses diperbarui!"
         
                 if status_baru == "Closed" and email_pelapor:
-                    subjek = urllib.parse.quote(f"Update Status Tiket iNews #{id_tiket}")
-                    pesan = urllib.parse.quote(f"Halo,\n\nTiket aduan Anda dengan ID {id_tiket} telah selesai ditangani (Closed).\n\nTerima kasih,\nIT Operations iNews")
+                    subjek = urllib.parse.quote(f"Update Status Tiket Perusahaan #{id_tiket}")
+                    pesan = urllib.parse.quote(f"Halo,\n\nTiket aduan Anda dengan ID {id_tiket} telah selesai ditangani (Closed).\n\nTerima kasih,\nIT Perusahaan")
                     tautan_email = f"mailto:{email_pelapor}?subject={subjek}&body={pesan}"
                     st.session_state["notif_email"] = tautan_email
                 
